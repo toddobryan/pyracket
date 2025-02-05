@@ -2,6 +2,7 @@ import decimal
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from lark import Lark, ast_utils, Transformer
 from lark.tree import Meta
@@ -30,10 +31,9 @@ class BinaryInt:
 
 @dataclass
 class Rational:
-    is_negative: bool
     numerator: Int
     denominator: Int
-
+    
 class _Ast(ast_utils.Ast, ast_utils.WithMeta):
     pass
 
@@ -54,11 +54,37 @@ class Boolean(_Ast):
     value: bool
 
 @dataclass
-class ExactRational(_Ast):
+class Number(_Ast):
     meta: Meta
-    value: Rational
+    value: "Number"
 
+@dataclass 
+class ExactRational(Number):
+    sign: Optional[str]
+    rat: "UnsignedRational"
+    
+class UnsignedRational:
+    pass
+    
+@dataclass
+class UnsignedRational2(UnsignedRational):
+    num: BinaryInt
+    denom: Optional[BinaryInt]
+    
+@dataclass
+class UnsignedRational8(UnsignedRational):
+    num: OctalInt
+    denom: Optional[OctalInt]
 
+@dataclass
+class UnsignedRational10(UnsignedRational):
+    num: DecimalInt
+    denom: Optional[DecimalInt]
+
+@dataclass
+class UnsignedRational16(UnsignedRational):
+    num: HexInt
+    denom: Optional[HexInt]
 
 class ToAst(Transformer):
     def TRUE(self, s):

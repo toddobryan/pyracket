@@ -1,5 +1,5 @@
 from lark.tree import Meta
-from pyracket.pyracket_ast import PyracketParser, Boolean, Rational, String
+from pyracket.pyracket_ast import *
 
 
 #TODO: Figure out how to test negative examples
@@ -35,13 +35,28 @@ def test_string():
          assert result.value == value
          assert result.meta.start_pos == start
          assert result.meta.end_pos == end
+         
+def test_unsigned_rationals():
+    p = PyracketParser(start="unsigned_rational_2", propagate_positions=True)
+    tests = [
+        ("101", (UnsignedRational2(BinaryInt(5), None), 0, 3)),
+        ("1010/101", (UnsignedRational2(BinaryInt(10), BinaryInt(5)), 0, 8))
+    ]
+    for (test, (value, start, end)) in tests:
+        result = p.parse_ast(test)
+        assert result == value
+        assert result.meta.start_pos == start
+        assert result.meta.end_pos == end
 
 def test_number():
     p = PyracketParser(start="number", propagate_positions=True)
     tests = [
-        ("0", (Rational(0, 1), 0, 1)),
-        ("1/2", (Rational(1, 2), 0, 3)),
+        ("0", (ExactRational(UnsignedRational10(DecimalInt(0), DecimalInt(1))), 0, 1)),
+        ("1/2", (ExactRational(UnsignedRational10(DecimalInt(1), DecimalInt(2))), 0, 3)),
     ]
     for (test, (value, start, end)) in tests:
         result = p.parse_ast(test)
-        print(result.pretty())
+        assert isinstance(result, Number)
+        assert result.value == value
+        assert result.meta.start_pos == start
+        assert result.meta.end_pos == end

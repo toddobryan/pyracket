@@ -3,7 +3,7 @@ file : expr*
 expr : boolean
      | string
      //| symbol
-     //| number
+     | number
      //| image
      //| function_call
 
@@ -31,9 +31,9 @@ DECIMAL_INEXACT : "#d#i"i | "#i"
 HEXADECIMAL_INEXACT : "#x#i"i | "#i#x"i
 
 number : exact | inexact
-exact : exact_rational | exact_complex
+exact : _exact_rational | exact_complex
 
-exact_rational : exact_rational_2 | exact_rational_8 | exact_rational_10 | exact_rational_16
+_exact_rational : exact_rational_2 | exact_rational_8 | exact_rational_10 | exact_rational_16
 exact_rational_2 : BINARY_EXACT sign? unsigned_rational_2
 exact_rational_8 : OCTAL_EXACT sign? unsigned_rational_8
 exact_rational_10 : DECIMAL_EXACT? sign? unsigned_rational_10
@@ -42,7 +42,6 @@ exact_rational_16 : HEXADECIMAL_EXACT sign? unsigned_rational_16
 unsigned_rational_2 : UNSIGNED_INTEGER_2 ("/" UNSIGNED_INTEGER_2)?
 unsigned_rational_8 : UNSIGNED_INTEGER_8 ("/" UNSIGNED_INTEGER_8)?
 unsigned_rational_10 : UNSIGNED_INTEGER_10 ("/" UNSIGNED_INTEGER_10)?
-unsigned_decimal: DIGIT_10* "." DIGIT_10+
 unsigned_rational_16: UNSIGNED_INTEGER_16 ("/" UNSIGNED_INTEGER_16)?
 
 exact_integer_2 : BINARY_EXACT sign? UNSIGNED_INTEGER_2
