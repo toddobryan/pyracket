@@ -1,12 +1,10 @@
 import decimal
-from enum import Enum
 import sys
 from dataclasses import dataclass
-from numbers import Rational
 from pathlib import Path
-from typing import Optional, TypeVar, Generic, Union
+from typing import Optional
 
-from lark import Lark, ast_utils, Transformer, v_args, Token
+from lark import Lark, ast_utils, Transformer
 from lark.tree import Meta
 
 this_module = sys.modules[__name__]
@@ -146,8 +144,25 @@ class Boolean(_Ast):
 @dataclass
 class RationalExact(NumberAst):
     meta: Meta
-    value: Rational
+    value: "Number"
 
+@dataclass
+class ExactRational(Number):
+    sign: Optional[str]
+    rat: "UnsignedRational"
+
+class UnsignedRational:
+    pass
+
+@dataclass
+class UnsignedRational2(UnsignedRational):
+    num: BinaryInt
+    denom: Optional[BinaryInt]
+
+@dataclass
+class UnsignedRational8(UnsignedRational):
+    num: OctalInt
+    denom: Optional[OctalInt]
 
 @dataclass
 class UnsignedRational(NumberAst):
@@ -165,6 +180,11 @@ class Sign(_Ast):
         self.meta = meta
         self.value = PosOrNeg.POS if value is None else PosOrNeg(value)
 
+
+@dataclass
+class UnsignedRational16(UnsignedRational):
+    num: HexInt
+    denom: Optional[HexInt]
 
 class ToAst(Transformer):
     def TRUE(self, s):
