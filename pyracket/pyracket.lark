@@ -22,7 +22,7 @@ ESCAPED_CHAR : /\\[abefnrtv"'\\]/
 
 BINARY_EXACT : "#b#e"i | "#e#b"i | "#b"i
 OCTAL_EXACT : "#o#e"i | "#e#o"i | "#o"i
-DECIMAL_EXACT : "#d#e"i | "#d"i | "#e"
+DECIMAL_EXACT : "#d#e"i | "#e#d"i | "#d"i | "#e"i
 HEXADECIMAL_EXACT : "#x#e"i | "#x"i | "#e#x"i
 
 BINARY_INEXACT : "#b#i"i | "#i#b"i
@@ -33,22 +33,23 @@ HEXADECIMAL_INEXACT : "#x#i"i | "#i#x"i
 number : exact | inexact
 exact : exact_rational | exact_complex
 
-exact_rational : exact_rational_2 | exact_rational_8 | exact_rational_10 | exact_rational_16
-exact_rational_2 : BINARY_EXACT sign? unsigned_rational_2
-exact_rational_8 : OCTAL_EXACT sign? unsigned_rational_8
-exact_rational_10 : DECIMAL_EXACT? sign? unsigned_rational_10
-exact_rational_16 : HEXADECIMAL_EXACT sign? unsigned_rational_16
+exact_rational : _exact_rational_2 | _exact_rational_8 | _exact_rational_10 | _exact_rational_16
+_exact_rational_2 : BINARY_EXACT opt_sign unsigned_rational_2
+_exact_rational_8 : OCTAL_EXACT opt_sign unsigned_rational_8
+_exact_rational_10 : [DECIMAL_EXACT] opt_sign (unsigned_rational_10 | unsigned_decimal)
+_exact_rational_16 : HEXADECIMAL_EXACT opt_sign unsigned_rational_16
 
-unsigned_rational_2 : UNSIGNED_INTEGER_2 ("/" UNSIGNED_INTEGER_2)?
-unsigned_rational_8 : UNSIGNED_INTEGER_8 ("/" UNSIGNED_INTEGER_8)?
-unsigned_rational_10 : UNSIGNED_INTEGER_10 ("/" UNSIGNED_INTEGER_10)?
-unsigned_decimal: DIGIT_10* "." DIGIT_10+
-unsigned_rational_16: UNSIGNED_INTEGER_16 ("/" UNSIGNED_INTEGER_16)?
+unsigned_rational_2 : UNSIGNED_INTEGER_2 ["/" UNSIGNED_INTEGER_2]
+unsigned_rational_8 : UNSIGNED_INTEGER_8 ["/" UNSIGNED_INTEGER_8]
+unsigned_rational_10 : UNSIGNED_INTEGER_10 ["/" UNSIGNED_INTEGER_10]
+unsigned_rational_16 : UNSIGNED_INTEGER_16 ["/" UNSIGNED_INTEGER_16]
+unsigned_decimal : /[0-9]*\.[0-9]+/
 
-exact_integer_2 : BINARY_EXACT sign? UNSIGNED_INTEGER_2
-exact_integer_8 : OCTAL_EXACT sign? UNSIGNED_INTEGER_8
-exact_integer_10 : DECIMAL_EXACT? sign? UNSIGNED_INTEGER_10
-exact_integer_16 : HEXADECIMAL_EXACT sign? UNSIGNED_INTEGER_16
+exact_integer : exact_integer_2 | exact_integer_8 | exact_integer_10 | exact_integer_16
+exact_integer_2 : BINARY_EXACT opt_sign UNSIGNED_INTEGER_2
+exact_integer_8 : OCTAL_EXACT opt_sign UNSIGNED_INTEGER_8
+exact_integer_10 : [DECIMAL_EXACT] opt_sign UNSIGNED_INTEGER_10
+exact_integer_16 : HEXADECIMAL_EXACT opt_sign UNSIGNED_INTEGER_16
 
 UNSIGNED_INTEGER_2: DIGIT_2+
 UNSIGNED_INTEGER_8 : DIGIT_8+
@@ -56,40 +57,40 @@ UNSIGNED_INTEGER_10 : DIGIT_10+
 UNSIGNED_INTEGER_16 : DIGIT_16+
 
 exact_complex : exact_complex_2 | exact_complex_8 | exact_complex_10 | exact_complex_16
-exact_complex_2 : exact_rational_2 sign exact_rational_2 "i"i
-exact_complex_8 : exact_rational_8 sign exact_rational_8 "i"i
-exact_complex_10 : exact_rational_10 sign exact_rational_10 "i"i
-exact_complex_16 : exact_rational_16 sign exact_rational_16 "i"i
+exact_complex_2 : [_exact_rational_2] SIGN [unsigned_rational_2] "i"i
+exact_complex_8 : [_exact_rational_8] SIGN [unsigned_rational_8] "i"i
+exact_complex_10 : [_exact_rational_10] SIGN [unsigned_rational_10] "i"i
+exact_complex_16 : [_exact_rational_16] SIGN [unsigned_rational_16] "i"i
 
 inexact : inexact_real | inexact_complex
 
 inexact_real : inexact_real_2 | inexact_real_8 | inexact_real_10 | inexact_real_16
-inexact_real_2 : BINARY_INEXACT (sign? inexact_normal_2 | sign inexact_special)
-inexact_real_8 : OCTAL_INEXACT (sign? inexact_normal_8 | sign inexact_special)
-inexact_real_10 : DECIMAL_INEXACT (sign? inexact_normal_10 | sign inexact_special)
-inexact_real_16 : HEXADECIMAL_INEXACT (sign? inexact_normal_16 | sign inexact_special)
+inexact_real_2 : BINARY_INEXACT (opt_sign inexact_normal_2 | SIGN inexact_special)
+inexact_real_8 : OCTAL_INEXACT (opt_sign inexact_normal_8 | SIGN inexact_special)
+inexact_real_10 : DECIMAL_INEXACT (opt_sign inexact_normal_10 | SIGN inexact_special)
+inexact_real_16 : HEXADECIMAL_INEXACT (opt_sign inexact_normal_16 | SIGN inexact_special)
 
 inexact_unsigned_2 : inexact_normal_2 | inexact_special
 inexact_unsigned_8 : inexact_normal_8 | inexact_special
 inexact_unsigned_10 : inexact_normal_10 | inexact_special
 inexact_unsigned_16 : inexact_normal_16 | inexact_special
 
-inexact_normal_2 : inexact_simple_2 (exp_mark exact_integer_2)?
-inexact_normal_8 : inexact_simple_8 (exp_mark exact_integer_8)?
-inexact_normal_10 : inexact_simple_10 (exp_mark exact_integer_10)?
-inexact_normal_16 : inexact_simple_16 (exp_mark exact_integer_16)?
+inexact_normal_2 : inexact_simple_2 (EXP_MARK exact_integer_2)?
+inexact_normal_8 : inexact_simple_8 (EXP_MARK exact_integer_8)?
+inexact_normal_10 : inexact_simple_10 (EXP_MARK exact_integer_10)?
+inexact_normal_16 : inexact_simple_16 (EXP_MARK exact_integer_16)?
 
 inexact_simple_2 : DIGITS_NUMSIGN_2 "."? "#"*
-                | UNSIGNED_INTEGER_2? "." DIGITS_NUMSIGN_2
+                | [UNSIGNED_INTEGER_2] "." DIGITS_NUMSIGN_2
                 | DIGITS_NUMSIGN_2 "/" DIGITS_NUMSIGN_2
 inexact_simple_8 : DIGITS_NUMSIGN_8 "."? "#"* 
-                | UNSIGNED_INTEGER_8? "." DIGITS_NUMSIGN_8
+                | [UNSIGNED_INTEGER_8] "." DIGITS_NUMSIGN_8
                 | DIGITS_NUMSIGN_8 "/" DIGITS_NUMSIGN_8
 inexact_simple_10 : DIGITS_NUMSIGN_10 "."? "#"*
-                 | UNSIGNED_INTEGER_10? "." DIGITS_NUMSIGN_10
+                 | [UNSIGNED_INTEGER_10] "." DIGITS_NUMSIGN_10
                  | DIGITS_NUMSIGN_10 "/" DIGITS_NUMSIGN_10
 inexact_simple_16 : DIGITS_NUMSIGN_16 "."? "#"* 
-                 | UNSIGNED_INTEGER_16? "." DIGITS_NUMSIGN_16
+                 | [UNSIGNED_INTEGER_16] "." DIGITS_NUMSIGN_16
                  | DIGITS_NUMSIGN_16 "/" DIGITS_NUMSIGN_16
 
 inexact_special : "inf.0"i | "nan.0"i | "inf.f"i | "nan.f"i
@@ -100,20 +101,21 @@ DIGITS_NUMSIGN_10: DIGIT_10+ "#"*
 DIGITS_NUMSIGN_16: DIGIT_16+ "#"*
 
 inexact_complex : inexact_complex_2 | inexact_complex_8 | inexact_complex_10 | inexact_complex_16
-inexact_complex_2 : inexact_real_2? sign inexact_unsigned_2 "i"
+inexact_complex_2 : [inexact_real_2] SIGN inexact_unsigned_2 "i"
                   | inexact_real_2 "@" inexact_real_2
-inexact_complex_8 : inexact_real_8? sign inexact_unsigned_8 "i"
+inexact_complex_8 : [inexact_real_8] SIGN inexact_unsigned_8 "i"
                   | inexact_real_8 "@" inexact_real_8
-inexact_complex_10 : inexact_real_10? sign inexact_unsigned_10 "i"
+inexact_complex_10 : [inexact_real_10] SIGN inexact_unsigned_10 "i"
                    | inexact_real_10 "@" inexact_real_10
-inexact_complex_16 : inexact_real_16? sign inexact_unsigned_16 "i"
+inexact_complex_16 : [inexact_real_16] SIGN inexact_unsigned_16 "i"
                    | inexact_real_16 "@" inexact_real_16
-
-sign : "+" | "-"
+SIGN : "+" | "-"
+opt_sign : [SIGN]
 
 DIGIT_16 : /[0-9A-F]/i
 DIGIT_10 : /[0-9]/
 DIGIT_8 : /[0-7]/
 DIGIT_2 : /[0-1]/
 
-exp_mark : "e"i
+EXP_MARK : "e"i
+DOT : "."
