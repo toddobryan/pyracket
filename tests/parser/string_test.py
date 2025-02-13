@@ -1,5 +1,5 @@
 from hypothesis import given, strategies as st, example
-from pyracket.pyracket_ast import String, PyracketParser
+from pyracket.expr_ast import String, PyracketParser
 from .ParserTestBase import ParserTestBase
 
 class TestString(ParserTestBase):

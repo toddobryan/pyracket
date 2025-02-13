@@ -1,6 +1,6 @@
 from hypothesis import given, strategies as st, example
-from pyracket.pyracket_ast import NumberAst, RationalExact, Rational, PosOrNeg, \
-    DecimalInt, _Ast, PyracketParser, OctalInt, BinaryInt
+from pyracket.expr_ast import NumberAst, RationalExact, Rational, PosOrNeg, \
+    PyracketParser, Int
 from tests.parser.ParserTestBase import ParserTestBase
 from . import strip_base
 
@@ -17,7 +17,7 @@ class TestInteger(ParserTestBase):
         to_parse = prefix + str(i)
         self.assert_parse_equal(
             to_parse, RationalExact,
-            Rational.from_int(10, i), 0, len(to_parse))
+            Int(10, i), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(2)), st.integers())
     def test_random_binary_integers(self, prefix, i):

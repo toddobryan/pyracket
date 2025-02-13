@@ -1,0 +1,4 @@
+BINARY_INEXACT : "#b#i"i | "#i#b"i
+OCTAL_INEXACT : "#o#i"i | "#i#o"i
+DECIMAL_INEXACT : "#d#i"i | "#i"
+HEXADECIMAL_INEXACT : "#x#i"i | "#i#x"i

@@ -1,3 +1,8 @@
+from hypothesis import strategies as st
+from hypothesis.strategies import composite
+
+from pyracket.expr_ast import Base, BASE_TO_ALPH
+
 BASE_PREFIXES = {
     2 : ["#b", "#B"],
     8 : ["#o", "#O"],
@@ -14,6 +19,12 @@ def exact_prefixes(base: int) -> list[str]:
             if exact_prefix and base_prefix:
                 prefixes.append(base_prefix + exact_prefix)
     return prefixes
+
+@composite
+def unsigned_int(draw, base: Base) -> tuple[int, str]:
+    int_string = draw(st.text(alphabet=BASE_TO_ALPH[base]))
+    return int(int_string, base.value), int_string
+
 
 EXACT = ["", "#e", "#E"]
 DECIMAL = ["", "#d", "#D"]

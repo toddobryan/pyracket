@@ -1,4 +1,4 @@
-from pyracket.pyracket_ast import Boolean, PyracketParser
+from pyracket.expr_ast import Boolean, PyracketParser
 from .ParserTestBase import ParserTestBase
 
 class TestBoolean(ParserTestBase):
