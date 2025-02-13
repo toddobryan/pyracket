@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, Union
 
-from lark import ast_utils, Transformer, v_args
+from lark import Transformer, v_args
 from lark.tree import Meta
 
-from pyracket.expr_ast import PyracketAst
-
+from ..semantics.numbers import RkNumber, RkExact, RkExactReal, RkInteger, \
+    RkRational, RkExactFloatingPoint
+from .expr_ast import PyracketAst
 
 class Base(Enum):
     BINARY = 2
@@ -31,42 +32,44 @@ class PosOrNeg(Enum):
 
 T = TypeVar("T")
 B = TypeVar("B", bound=Base)
+N = TypeVar("N", bound=RkNumber)
+E = TypeVar("E", bound=RkExact)
+R = TypeVar("R", bound=RkExactReal)
+
+class NumberAst[N](PyracketAst[N]):
+    value: N
 
 
-
-class NumberAst(PyracketAst):
+class ExactAst[E](NumberAst[E]):
     pass
 
 
-class ExactAst(NumberAst):
-    pass
-
-
-class Real[B](NumberAst):
+class ExactRealAst[R](ExactAst[R]):
     base: B
 
-
 @dataclass
-class Int[B](Real[B]):
+class IntegerAst[B](ExactRealAst[RkInteger]):
     meta: Meta
     base: B
-    value: int
-
+    value: RkInteger
 
 @dataclass
-class FloatingPoint[B](Real[B]):
+class RationalAst[B](ExactAst[RkRational]):
+    meta: Meta
+    base: B
+    value: RkRational
+
+@dataclass
+class ExactFloatingPointAst[B](ExactRealAst[RkExactFloatingPoint]):
+    meta: Meta
     base: B
     pos_or_neg: PosOrNeg
     digits: str
     exponent: int
 
 
-@dataclass
-class Rational[B](NumberAst):
-    base: B
-    pos_or_neg: PosOrNeg
-    numerator: Int[B]
-    denominator: Int[B]
+
+
 
     @staticmethod
     def make[B](base: B, numerator: Int[B], denominator: Int[B]) -> "Rational":
@@ -113,7 +116,7 @@ class ToAstExact(Transformer):
         return Int(meta, 2, int(s, 2))
 
     @v_args(inline=True, meta=True)
-    def UNSIGNED_INTEGER_8(self, s) -> Int:
+    def UNSIGNED_INTEGER_8(self, meta, s) -> Int:
         return Int(meta, 8, int(s, 8))
 
     @v_args(inline=True, meta=True)
@@ -160,9 +163,10 @@ class ToAstExact(Transformer):
             sign: PosOrNeg,
             unsigned_rational: UnsignedRational) -> RationalExact:
         return self.exact_rational(meta,
-                                   Rational(sign,
+                                   Rational(Base.BINARY,
+                                            sign,
                                             unsigned_rational.numerator,
-                                            unsigned_rational.denominator))
+                                            unsigned_rational.den))
 
     @v_args(inline=True, meta=True)
     def exact_rational_8(
@@ -173,22 +177,23 @@ class ToAstExact(Transformer):
             unsigned_rational: UnsignedRational) -> RationalExact:
         return self.exact_rational(meta,
                                    Rational(sign,
-                                            unsigned_rational.numerator,
-                                            unsigned_rational.denominator))
+                                            Base.OCTAL,
+                                            unsigned_rational.num,
+                                            unsigned_rational.denom))
 
     @v_args(inline=True, meta=True)
     def exact_rational_10(self, meta: Meta, _: Optional[str], sign: PosOrNeg,
                           unsigned_rational: UnsignedRational):
         return self.exact_rational(meta,
-                                   Rational(sign, unsigned_rational.numerator,
-                                            unsigned_rational.denominator))
+                                   Rational(sign, unsigned_rational.num,
+                                            unsigned_rational.den))
 
     @v_args(inline=True, meta=True)
     def exact_rational_16(self, meta: Meta, _: Optional[str], sign: PosOrNeg,
                           unsigned_rational: UnsignedRational):
         return self.exact_rational(meta,
-                                   Rational(sign, unsigned_rational.numerator,
-                                            unsigned_rational.denominator))
+                                   Rational(sign, unsigned_rational.num,
+                                            unsigned_rational.den))
 
     def unsigned_rational[B](
             self, meta: Meta,
@@ -201,7 +206,7 @@ class ToAstExact(Transformer):
             self, meta: Meta,
             numerator: Int[Base.BINARY], denominator: Int[Base.BINARY]
     ) -> UnsignedRational:
-        return self.unsigned_rational(meta, Base.BINARY, numerator,denominator)
+        return self.unsigned_rational(meta, Base.BINARY, numerator, denominator)
 
     @v_args(inline=True, meta=True)
     def unsigned_rational_8(
@@ -238,7 +243,7 @@ class ToAstExact(Transformer):
             real: Optional[Rational],
             sign: PosOrNeg,
             imaginary: Optional[UnsignedRational]) -> ComplexExact:
-        imag = Rational(sign, imaginary.numerator, imaginary.denominator) \
+        imag = Rational(sign, imaginary.num, imaginary.denom) \
             if imaginary else Rational.from_int(2, 1)
         return self.exact_complex(
             meta, Complex(real or Rational.from_int(2, 0), imag))
@@ -250,7 +255,7 @@ class ToAstExact(Transformer):
             real: Optional[Rational],
             sign: PosOrNeg,
             imaginary: Optional[UnsignedRational]) -> ComplexExact:
-        imag = Rational(sign, imaginary.numerator, imaginary.denominator) \
+        imag = Rational(sign, imaginary.num, imaginary.denom) \
             if imaginary else Rational.from_int(8, 1)
         return self.exact_complex(
             meta, Complex(real or Rational.from_int(8, 0), imag))
@@ -262,7 +267,7 @@ class ToAstExact(Transformer):
             real: Optional[Rational],
             sign: PosOrNeg,
             imaginary: Optional[UnsignedRational]) -> ComplexExact:
-        imag = Rational(sign, imaginary.numerator, imaginary.denominator) \
+        imag = Rational(sign, imaginary.num, imaginary.denom) \
             if imaginary else Rational.from_int(10, 1)
         return self.exact_complex(
             meta, Complex(real or Rational.from_int(10, 0), imag))
@@ -274,7 +279,7 @@ class ToAstExact(Transformer):
             real: Optional[Rational],
             sign: PosOrNeg,
             imaginary: Optional[UnsignedRational]) -> ComplexExact:
-        imag = Rational(sign, imaginary.numerator, imaginary.denominator) \
+        imag = Rational(sign, imaginary.num, imaginary.denom) \
             if imaginary else Rational.make(1, 1)
         return self.exact_complex(
             meta, Complex(real or Rational.from_int(16, 0), imag))

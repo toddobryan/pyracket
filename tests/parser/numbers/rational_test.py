@@ -1,6 +1,6 @@
 from hypothesis import given, strategies as st
 
-from pyracket.expr_ast import PyracketParser, RationalExact, Rational
+from pyracket.syntax.expr_ast import PyracketParser
 from ..ParserTestBase import ParserTestBase
 from ..numbers import exact_prefixes, strip_base
 

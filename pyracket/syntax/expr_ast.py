@@ -1,10 +1,13 @@
 import sys
 from dataclasses import dataclass
+from importlib import resources as impres
 from pathlib import Path
 from typing import TypeVar, Generic
 
-from lark import Lark, ast_utils, Transformer, v_args
+from lark import Lark, ast_utils, Transformer
 from lark.tree import Meta
+
+from .. import grammars
 
 this_module = sys.modules[__name__]
 
@@ -16,7 +19,7 @@ class PyracketAst(Generic[T], ast_utils.Ast, ast_utils.WithMeta):
 
 
 @dataclass
-class String(PyracketAst, ast_utils.AsList):
+class StringAst(PyracketAst, ast_utils.AsList):
     meta: Meta
     value: str
 
@@ -27,7 +30,7 @@ class String(PyracketAst, ast_utils.AsList):
 
 
 @dataclass
-class Boolean(PyracketAst):
+class BooleanAst(PyracketAst):
     meta: Meta
     value: bool
 
@@ -64,17 +67,17 @@ class ToAst(Transformer):
             raise ValueError(f"Invalid escape sequence: {s}")
 
 
+transformer = ast_utils.create_transformer(this_module, ToAst())
+
+
 class PyracketParser(Lark):
     def __init__(self, **options) -> None:
-        super().__init__(Path(__file__).with_name("expr.lark").read_text(),
-                         **options)
+        super().__init__(
+            (impres.files(grammars) / "expr.lark").read_text(), **options)
 
     def parse_ast(self, text: str) -> ast_utils.Ast:
         tree = self.parse(text)
         return transformer.transform(tree)
-
-
-transformer = ast_utils.create_transformer(this_module, ToAst())
 
 escape_chars = {
     "a": "\a",

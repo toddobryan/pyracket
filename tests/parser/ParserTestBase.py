@@ -1,12 +1,10 @@
-import unittest
 from typing import TypeVar, cast
 
-from pyracket.expr_ast import _Ast
-from pyracket.expr_ast import PyracketParser
+from pyracket.syntax.expr_ast import PyracketParser
 
 T = TypeVar("T")
 
-class ParserTestBase():
+class ParserTestBase:
     p: PyracketParser
 
     def assert_parse_equal(self, to_parse: str, cls: type[T], value, start, end):

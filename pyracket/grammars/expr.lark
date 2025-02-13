@@ -1,12 +1,12 @@
-%import .exact_number exact
-%import .inexact_number inexact
+// %import .grammars.exact_number.exact
+// %import .inexact_number.inexact
 
 file : expr*
 
 expr : boolean
      | string
      //| symbol
-     | number
+     //| number
      //| image
      //| function_call
 
@@ -14,7 +14,7 @@ boolean : TRUE | FALSE
 
 string : "\"" (ESCAPED_CHAR | UNESCAPED_CHAR)* "\""
 
-number : exact | inexact
+// number : exact | inexact
 
 TRUE : "#true"
 FALSE : "#false"

@@ -1,6 +1,7 @@
 from hypothesis import given, strategies as st, example
-from pyracket.expr_ast import NumberAst, RationalExact, Rational, PosOrNeg, \
-    PyracketParser, Int
+
+from pyracket.syntax.expr_ast import PyracketParser
+from pyracket.syntax.number_ast import RationalExact, Rational, Int
 from tests.parser.ParserTestBase import ParserTestBase
 from . import strip_base
 
