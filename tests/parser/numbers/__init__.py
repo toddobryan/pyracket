@@ -1,7 +1,7 @@
 from hypothesis import strategies as st
 from hypothesis.strategies import composite
 
-from pyracket.syntax.number_ast import Base, BASE_TO_ALPH
+from pyracket.syntax.expr_ast import BASE_TO_ALPH, Base
 
 BASE_PREFIXES = {
     2 : ["#b", "#B"],

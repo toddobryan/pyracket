@@ -1,14 +1,13 @@
 from hypothesis import given, strategies as st, example
 
-from pyracket.syntax.expr_ast import PyracketParser
-from pyracket.syntax.number_ast import RationalExact, Rational, Int
+from pyracket.syntax import PyracketParser
 from tests.parser.ParserTestBase import ParserTestBase
 from . import strip_base
 
 from ..numbers import exact_prefixes
 
 class TestInteger(ParserTestBase):
-    p = PyracketParser(start="number", propagate_positions=True)
+    p = PyracketParser(start="number")
 
     @given(st.sampled_from(exact_prefixes(10)), st.integers())
     @example("", 0)

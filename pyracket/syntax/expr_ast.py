@@ -1,25 +1,23 @@
 import sys
 from dataclasses import dataclass
-from importlib import resources as impres
-from pathlib import Path
-from typing import TypeVar, Generic
+from enum import Enum
+from typing import TypeVar, Optional
 
-from lark import Lark, ast_utils, Transformer
+from lark import ast_utils
+from lark.visitors import Transformer, v_args
 from lark.tree import Meta
 
-from .. import grammars
+from pyracket.semantics.numbers import RkNumber, RkExact, RkExactReal, \
+    RkInteger, RkRational, RkExactFloatingPoint, RkExactComplex
 
 this_module = sys.modules[__name__]
 
-T = TypeVar("T")
-
-class PyracketAst(Generic[T], ast_utils.Ast, ast_utils.WithMeta):
+class PyracketAst[T](ast_utils.Ast, ast_utils.WithMeta):
     meta: Meta
     value: T
 
-
 @dataclass
-class StringAst(PyracketAst, ast_utils.AsList):
+class StringAst(PyracketAst[str], ast_utils.AsList):
     meta: Meta
     value: str
 
@@ -30,12 +28,80 @@ class StringAst(PyracketAst, ast_utils.AsList):
 
 
 @dataclass
-class BooleanAst(PyracketAst):
+class BooleanAst(PyracketAst[bool]):
     meta: Meta
     value: bool
 
+class Base(Enum):
+    BINARY = 2
+    OCTAL = 8
+    DECIMAL = 10
+    HEXADECIMAL = 16
 
-class ToAst(Transformer):
+BASE_TO_ALPH = {
+    Base.BINARY: "01",
+    Base.OCTAL: "01234567",
+    Base.DECIMAL: "0123456789",
+    Base.HEXADECIMAL : "0123456789abcdefABCDEF",
+}
+
+class PosOrNeg(Enum):
+    POS = "+"
+    NEG = "-"
+
+
+T = TypeVar("T")
+B = TypeVar("B", bound=Base)
+N = TypeVar("N", bound=RkNumber)
+E = TypeVar("E", bound=RkExact)
+R = TypeVar("R", bound=RkExactReal)
+
+class NumberAst[N](PyracketAst[N]):
+    value: N
+
+
+class ExactAst[E](NumberAst[E]):
+    pass
+
+
+class ExactRealAst[R](ExactAst[R]):
+    meta: Meta
+    base: B
+    value: R
+
+@dataclass
+class IntegerAst[B](ExactRealAst[RkInteger]):
+    meta: Meta
+    base: B
+    value: RkInteger
+
+@dataclass
+class RationalAst[B](ExactAst[RkRational]):
+    meta: Meta
+    base: B
+    value: RkRational
+
+
+@dataclass
+class ExactFloatingPointAst[B](ExactRealAst[RkExactFloatingPoint]):
+    meta: Meta
+    value: RkExactFloatingPoint
+
+
+@dataclass
+class ExactComplexAst[B](NumberAst[RkExactComplex]):
+    meta: Meta
+    base: B
+    value: RkExactComplex
+
+
+def integer_ast_of[B](
+        meta: Meta, base: B, sign: Optional[PosOrNeg], digits: str
+) -> IntegerAst[B]:
+    value = int(digits, base.value)
+    value = -value if sign is PosOrNeg.NEG else value
+    return IntegerAst(meta, base, RkInteger(value))
+class ToAstExpr(Transformer):
     def TRUE(self, s):
         return True
 
@@ -66,18 +132,42 @@ class ToAst(Transformer):
         else:
             raise ValueError(f"Invalid escape sequence: {s}")
 
+    @v_args(inline=True)
+    def exact[E](self, value: ExactAst[E]) -> ExactAst[E]:
+        return value
 
-transformer = ast_utils.create_transformer(this_module, ToAst())
+    @v_args(inline=True)
+    def exact_real[R](self, value: ExactRealAst[R]) -> ExactRealAst[R]:
+        return value
 
+    @v_args(inline=True)
+    def exact_integer(self, value: IntegerAst[B]) -> IntegerAst[B]:
+        return value
 
-class PyracketParser(Lark):
-    def __init__(self, **options) -> None:
-        super().__init__(
-            (impres.files(grammars) / "expr.lark").read_text(), **options)
+    @v_args(inline=True, meta=True)
+    def exact_integer_2(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
+    ) -> IntegerAst[Base.BINARY]:
+        return integer_ast_of(meta, Base.BINARY, sign, digits)
 
-    def parse_ast(self, text: str) -> ast_utils.Ast:
-        tree = self.parse(text)
-        return transformer.transform(tree)
+    @v_args(inline=True, meta=True)
+    def exact_integer_8(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
+    ) -> IntegerAst[Base.BINARY]:
+        return integer_ast_of(meta, Base.OCTAL, sign, digits)
+
+    @v_args(inline=True, meta=True)
+    def exact_integer_10(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
+    ) -> IntegerAst[Base.BINARY]:
+        return integer_ast_of(meta, Base.DECIMAL, sign, digits)
+
+    @v_args(inline=True, meta=True)
+    def exact_integer_16(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
+    ) -> IntegerAst[Base.BINARY]:
+        return integer_ast_of(meta, Base.HEXADECIMAL, sign, digits)
+
 
 escape_chars = {
     "a": "\a",

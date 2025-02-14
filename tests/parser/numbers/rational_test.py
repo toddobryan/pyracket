@@ -1,12 +1,12 @@
 from hypothesis import given, strategies as st
 
-from pyracket.syntax.expr_ast import PyracketParser
+from pyracket.syntax import PyracketParser
 from ..ParserTestBase import ParserTestBase
 from ..numbers import exact_prefixes, strip_base
 
 
 class TestRational(ParserTestBase):
-    p = PyracketParser(start="number", propagate_positions=True)
+    p = PyracketParser(start="number")
 
     @given(st.sampled_from(exact_prefixes(10)), st.integers(), st.integers(min_value=1))
     def test_random_decimal_fractions(self, prefix, num, den):

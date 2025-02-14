@@ -1,9 +1,11 @@
 from hypothesis import given, strategies as st, example
-from pyracket.syntax.expr_ast import StringAst, PyracketParser
+
+from pyracket.syntax import PyracketParser
+from pyracket.syntax.expr_ast import StringAst
 from tests.parser.ParserTestBase import ParserTestBase
 
 class TestString(ParserTestBase):
-    p = PyracketParser(start="string", propagate_positions=True)
+    p = PyracketParser(start="string")
 
     def test_hello(self):
         self.assert_parse_equal('"hello"', StringAst, "hello", 0, 7)
