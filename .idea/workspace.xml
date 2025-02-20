@@ -4,30 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8a206ea-7ede-4744-a474-8149b1b4c452" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/PythonProject.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add_bin_to_path.sh" beforeDir="false" afterPath="$PROJECT_DIR$/add_bin_to_path.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/grammars/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/grammars/exact_number.lark" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/grammars/expr.lark" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/grammars/inexact_number.lark" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/semantics/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/semantics/numbers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/syntax/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/syntax/expr_ast.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyracket/syntax/number_ast.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/ParserTestBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/ParserTestBase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/boolean_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/boolean_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/numbers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/numbers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/numbers/complex_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/numbers/complex_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/numbers/integer_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/numbers/integer_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/numbers/rational_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/numbers/rational_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parser/string_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/parser/string_test.py" afterDir="false" />
-    </list>
+    <list default="true" id="a8a206ea-7ede-4744-a474-8149b1b4c452" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,29 +13,29 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2t0ahKg75ri8AoNTEc6RKtzTgGM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.Python tests in tests.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="pyracket" />
@@ -85,8 +62,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
-        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -99,6 +76,7 @@
       <option name="presentableId" value="Default" />
       <updated>1739491565112</updated>
       <workItem from="1739491566440" duration="847000" />
+      <workItem from="1739990745597" duration="25000" />
     </task>
     <servers />
   </component>

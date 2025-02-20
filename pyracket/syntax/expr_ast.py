@@ -7,7 +7,7 @@ from lark import ast_utils
 from lark.visitors import Transformer, v_args
 from lark.tree import Meta
 
-from pyracket.semantics.numbers import RkNumber, RkExact, RkExactReal, \
+from pyracket.semantics.numbers import Base, RkNumber, RkExact, RkExactReal, \
     RkInteger, RkRational, RkExactFloatingPoint, RkExactComplex
 
 this_module = sys.modules[__name__]
@@ -21,7 +21,7 @@ class StringAst(PyracketAst[str], ast_utils.AsList):
     meta: Meta
     value: str
 
-    def __init__(self, meta: Meta, value: list[str]) -> None:
+    def __init__(self, meta: Meta, value: str) -> None:
         super().__init__()
         self.meta = meta
         self.value = "".join(value)
@@ -32,18 +32,6 @@ class BooleanAst(PyracketAst[bool]):
     meta: Meta
     value: bool
 
-class Base(Enum):
-    BINARY = 2
-    OCTAL = 8
-    DECIMAL = 10
-    HEXADECIMAL = 16
-
-BASE_TO_ALPH = {
-    Base.BINARY: "01",
-    Base.OCTAL: "01234567",
-    Base.DECIMAL: "0123456789",
-    Base.HEXADECIMAL : "0123456789abcdefABCDEF",
-}
 
 class PosOrNeg(Enum):
     POS = "+"
@@ -98,9 +86,18 @@ class ExactComplexAst[B](NumberAst[RkExactComplex]):
 def integer_ast_of[B](
         meta: Meta, base: B, sign: Optional[PosOrNeg], digits: str
 ) -> IntegerAst[B]:
+    print(f"digits: {digits}")
     value = int(digits, base.value)
     value = -value if sign is PosOrNeg.NEG else value
     return IntegerAst(meta, base, RkInteger(value))
+
+def rational_ast_of[B](
+        meta: Meta, base: B, sign: Optional[PosOrNeg], value: RkRational
+) -> RationalAst[B]:
+    if sign is PosOrNeg.NEG:
+        value = RkRational(-value.numerator, value.denominator)
+    return RationalAst(meta, base, value)
+
 class ToAstExpr(Transformer):
     def TRUE(self, s):
         return True
@@ -131,6 +128,25 @@ class ToAstExpr(Transformer):
             return chr(int(s[2:], 16))
         else:
             raise ValueError(f"Invalid escape sequence: {s}")
+
+    @v_args(inline=True)
+    def opt_sign(self, sign: Optional[PosOrNeg]) -> Optional[PosOrNeg]:
+        return sign
+
+    def SIGN(self, s) -> PosOrNeg:
+        return PosOrNeg(s[0])
+        
+    @v_args(inline=True, meta=True)
+    def boolean(self, meta, value: bool) -> BooleanAst:
+        return BooleanAst(meta, value)
+    
+    @v_args(inline=True, meta=True)
+    def string(self, meta, *values: str) -> StringAst:
+        return StringAst(meta, "".join(values))
+    
+    @v_args(inline=True)
+    def number[N](self, value: NumberAst[N]) -> NumberAst[N]:
+        return value
 
     @v_args(inline=True)
     def exact[E](self, value: ExactAst[E]) -> ExactAst[E]:
@@ -168,7 +184,55 @@ class ToAstExpr(Transformer):
     ) -> IntegerAst[Base.BINARY]:
         return integer_ast_of(meta, Base.HEXADECIMAL, sign, digits)
 
+    @v_args(inline=True)
+    def exact_rational(self, value: RationalAst[B]) -> RationalAst:
+        return value
+    
+    @v_args(inline=True, meta=True)
+    def exact_rational_2(
+        self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
+    ) -> RationalAst[Base.BINARY]:
+        return rational_ast_of(meta, Base.BINARY, sign, value)
+    
+    @v_args(inline=True, meta=True)
+    def exact_rational_8(
+        self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
+    ) -> RationalAst[Base.OCTAL]:
+        return rational_ast_of(meta, Base.OCTAL, sign, value)
+    
+    @v_args(inline=True, meta=True)
+    def exact_rational_10(
+        self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
+    ) -> RationalAst[Base.DECIMAL]:
+        return rational_ast_of(meta, Base.DECIMAL, sign, value)
+    
+    @v_args(inline=True, meta=True)
+    def exact_rational_16(
+        self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
+    ) -> RationalAst[Base.HEXADECIMAL]:
+        return rational_ast_of(meta, Base.HEXADECIMAL, sign, value)
 
+    @v_args(inline=True)
+    def unsigned_rational_2(self, num: str, den: str) -> RkRational:
+        return RkRational(int(num, 2), int(den, 2))
+
+    @v_args(inline=True)
+    def unsigned_rational_8(self, num: str, den: str) -> RkRational:
+        return RkRational(int(num, 8), int(den, 8))
+
+    @v_args(inline=True)
+    def unsigned_rational_10(self, num: str, den: str) -> RkRational:
+        return RkRational(int(num, 10), int(den, 10))
+
+    @v_args(inline=True)
+    def unsigned_rational_16(self, num: str, den: str) -> RkRational:
+        return RkRational(int(num, 16), int(den, 16))
+
+    @v_args(inline=True, meta=True)
+    def exact_rational(self, meta: Meta, value: RationalAst[B]) -> RationalAst[B]:
+        return value
+    
+ 
 escape_chars = {
     "a": "\a",
     "b": "\b",
