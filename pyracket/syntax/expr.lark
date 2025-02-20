@@ -1,0 +1,102 @@
+file : expr*
+
+expr : boolean
+     | string
+     //| symbol
+     | number
+     //| image
+     //| function_call
+
+boolean : TRUE | FALSE
+
+string : "\"" (ESCAPED_CHAR | UNESCAPED_CHAR)* "\""
+
+number : exact //| inexact
+
+TRUE : "#true"
+FALSE : "#false"
+
+UNESCAPED_CHAR : /[^\\"]/
+ESCAPED_CHAR : /\\[abefnrtv"'\\]/
+             | /\\[0-9]{1,3}/
+             | /\\x[0-9a-fA-F]{1,2}/
+             | /\\u[0-9a-fA-F]{1,4}/
+             | /\\u[0-9a-fA-F]{4}\\u[0-9a-fA-F]{4}/
+             | /\\U[0-9a-fA-F]{1,8}/
+
+exact : exact_real | exact_complex
+
+exact_real : exact_integer
+           | exact_floating_point
+           | exact_rational
+
+exact_integer : exact_integer_2
+              | exact_integer_8
+              | exact_integer_10
+              | exact_integer_16
+exact_integer_2 : BINARY_EXACT opt_sign UNSIGNED_INTEGER_2
+exact_integer_8 : OCTAL_EXACT opt_sign UNSIGNED_INTEGER_8
+exact_integer_10 : [DECIMAL_EXACT] opt_sign UNSIGNED_INTEGER_10
+exact_integer_16 : HEXADECIMAL_EXACT opt_sign UNSIGNED_INTEGER_16
+
+UNSIGNED_INTEGER_2: DIGIT_2+
+UNSIGNED_INTEGER_8 : DIGIT_8+
+UNSIGNED_INTEGER_10 : DIGIT_10+
+UNSIGNED_INTEGER_16 : DIGIT_16+
+
+exact_floating_point : exact_floating_point_2
+                     | exact_floating_point_8
+                     | exact_floating_point_10
+                     | exact_floating_point_16
+exact_floating_point_2 : BINARY_EXACT opt_sign unsigned_floating_point_2
+exact_floating_point_8 : OCTAL_EXACT opt_sign unsigned_floating_point_8
+exact_floating_point_10 : DECIMAL_EXACT opt_sign unsigned_floating_point_10
+exact_floating_point_16 : HEXADECIMAL_EXACT opt_sign unsigned_floating_point_16
+
+unsigned_floating_point_2 : DIGIT_2* "." DIGIT_2+
+unsigned_floating_point_8 : DIGIT_8* "." DIGIT_8+
+unsigned_floating_point_10 : DIGIT_10* "." DIGIT_10+
+unsigned_floating_point_16 : DIGIT_16* "." DIGIT_16+
+
+exact_rational : exact_rational_2
+               | exact_rational_8
+               | exact_rational_10
+               | exact_rational_16
+exact_rational_2 : BINARY_EXACT opt_sign unsigned_rational_2
+exact_rational_8 : OCTAL_EXACT opt_sign unsigned_rational_8
+exact_rational_10 : [DECIMAL_EXACT] opt_sign unsigned_rational_10
+exact_rational_16 : HEXADECIMAL_EXACT opt_sign unsigned_rational_16
+
+unsigned_rational_2 : UNSIGNED_INTEGER_2 "/" UNSIGNED_INTEGER_2
+unsigned_rational_8 : UNSIGNED_INTEGER_8 "/" UNSIGNED_INTEGER_8
+unsigned_rational_10 : UNSIGNED_INTEGER_10 "/" UNSIGNED_INTEGER_10
+unsigned_rational_16 : UNSIGNED_INTEGER_16 "/" UNSIGNED_INTEGER_16
+
+exact_complex : exact_complex_2
+              | exact_complex_8
+              | exact_complex_10
+              | exact_complex_16
+exact_complex_2 : [exact_rational_2] SIGN [unsigned_rational_2] "i"i
+exact_complex_8 : [exact_rational_8] SIGN [unsigned_rational_8] "i"i
+exact_complex_10 : [exact_rational_10] SIGN [unsigned_rational_10] "i"i
+exact_complex_16 : [exact_rational_16] SIGN [unsigned_rational_16] "i"i
+
+opt_sign : [SIGN]
+
+BINARY_EXACT : "#b#e"i | "#e#b"i | "#b"i
+OCTAL_EXACT : "#o#e"i | "#e#o"i | "#o"i
+DECIMAL_EXACT : "#d#e"i | "#e#d"i | "#d"i | "#e"i // should be optional
+HEXADECIMAL_EXACT : "#x#e"i | "#x"i | "#e#x"i
+
+DIGIT_2 : /[01]/
+DIGIT_8 : /[0-7]/
+DIGIT_10 : /[0-9]/
+DIGIT_16 : /[0-9a-fA-F]/
+
+SIGN : /[+-]/
+
+BINARY_INEXACT : "#b#i"i | "#i#b"i
+OCTAL_INEXACT : "#o#i"i | "#i#o"i
+DECIMAL_INEXACT : "#d#i"i | "#i"
+HEXADECIMAL_INEXACT : "#x#i"i | "#i#x"i
+

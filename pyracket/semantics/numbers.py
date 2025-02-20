@@ -1,4 +1,19 @@
 from dataclasses import dataclass
+from enum import Enum
+
+class Base(Enum):
+    BINARY = 2
+    OCTAL = 8
+    DECIMAL = 10
+    HEXADECIMAL = 16
+
+
+BASE_TO_ALPH = {
+    Base.BINARY: "01",
+    Base.OCTAL: "01234567",
+    Base.DECIMAL: "0123456789",
+    Base.HEXADECIMAL : "0123456789abcdefABCDEF",
+}
 
 
 class RkNumber:
@@ -17,7 +32,7 @@ class RkExactReal(RkExact):
 class RkInteger(RkExactReal):
     value: int
 
-
+@dataclass
 class RkRational(RkExactReal):
     # normalized so that denominator is always positive
     numerator: int
@@ -34,8 +49,9 @@ class RkRational(RkExactReal):
 
 @dataclass
 class RkExactFloatingPoint(RkExactReal):
+    base: Base
     digits: str
-    exponent: int
+    exponent: str
 
 
 @dataclass

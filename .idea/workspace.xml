@@ -4,165 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49219cf7-f45a-494f-9953-3c1da39d3dff" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a8a206ea-7ede-4744-a474-8149b1b4c452" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/.venv/lib/python3.12/site-packages/hypothesis/strategies/__init__.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/.venv/lib/python3.12/site-packages/hypothesis/strategies/_internal/__init__.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/.venv/lib/python3.12/site-packages/hypothesis/strategies/_internal/strategies.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/.venv/lib/python3.12/site-packages/lark/tree.py" root0="SKIP_INSPECTION" />
-    <setting file="file:///usr/lib/python3.12/importlib/__init__.py" root0="SKIP_INSPECTION" />
-    <setting file="file:///usr/lib/python3.12/pathlib.py" root0="SKIP_INSPECTION" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
-  </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
-  <component name="ProjectId" id="2sRxgAQ2mvFHZDZZgbCFkSUduI5" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="2t0ahKg75ri8AoNTEc6RKtzTgGM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests for integer_test.TestInteger.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for integer_test.TestInteger.test_0.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for parser.boolean_test.TestBoolean.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for parser.numbers.integer_test.TestInteger.test_random_decimal_integers.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for parser.string_test.TestString.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for rational_test.TestRational.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for rational_test.TestRational.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in boolean_test.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in integer_test.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in rational_test.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in string_test.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_lexer.py.executor&quot;: &quot;Debug&quot;,
     &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
-    &quot;Python.boolean_test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.create_ast.executor&quot;: &quot;Run&quot;,
-    &quot;Python.string_test.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/toddobryan/PycharmProjects/pyracket/pyracket&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/pyracket/syntax" />
-      <recent name="$PROJECT_DIR$/pyracket/lark" />
-      <recent name="$PROJECT_DIR$/pyracket" />
-      <recent name="$PROJECT_DIR$/tests/parser" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Python tests.Python tests in tests">
-    <configuration name="boolean_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="PythonProject" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/parser" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/parser/boolean_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="string_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="PythonProject" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/parser" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/parser/string_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for rational_test.TestRational.test" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="PythonProject" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/parser/numbers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;rational_test.TestRational.test&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests in rational_test.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="PythonProject" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/parser/numbers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/parser/numbers/rational_test.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager">
     <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="PythonProject" />
+      <module name="pyracket" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -180,10 +56,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.Python tests in tests" />
-        <item itemvalue="Python.string_test" />
-        <item itemvalue="Python.boolean_test" />
-        <item itemvalue="Python tests.Python tests in rational_test.py" />
-        <item itemvalue="Python tests.Python tests for rational_test.TestRational.test" />
       </list>
     </recent_temporary>
   </component>
@@ -198,50 +70,20 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="49219cf7-f45a-494f-9953-3c1da39d3dff" name="Changes" comment="" />
-      <created>1738432297146</created>
+      <changelist id="a8a206ea-7ede-4744-a474-8149b1b4c452" name="Changes" comment="" />
+      <created>1739491565112</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1738432297146</updated>
-      <workItem from="1738432298169" duration="2000" />
-      <workItem from="1738432719631" duration="308000" />
-      <workItem from="1738433039656" duration="121000" />
-      <workItem from="1738537546531" duration="5382000" />
-      <workItem from="1738551396639" duration="3482000" />
-      <workItem from="1738625216222" duration="22000" />
-      <workItem from="1738800188927" duration="41000" />
-      <workItem from="1738934753621" duration="141000" />
-      <workItem from="1738935600972" duration="29872000" />
-      <workItem from="1739211410637" duration="1676000" />
-      <workItem from="1739287011963" duration="14800000" />
-      <workItem from="1739391310981" duration="2041000" />
-      <workItem from="1739394921969" duration="4111000" />
-      <workItem from="1739409834467" duration="316000" />
-      <workItem from="1739451436866" duration="970000" />
-      <workItem from="1739452446635" duration="11329000" />
-      <workItem from="1739540056271" duration="614000" />
-      <workItem from="1739801586022" duration="12000" />
+      <updated>1739491565112</updated>
+      <workItem from="1739491566440" duration="847000" />
+      <workItem from="1739990745597" duration="25000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/parser/string_test.py</url>
-          <line>22</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pyracket$.coverage" NAME=" Coverage Results" MODIFIED="1739462474566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/pyracket$string_test.coverage" NAME="string_test Coverage Results" MODIFIED="1739462326045" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/parser" />
-    <SUITE FILE_PATH="coverage/pyracket$create_ast.coverage" NAME="create_ast Coverage Results" MODIFIED="1738541203569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pyracket" />
-    <SUITE FILE_PATH="coverage/pyracket$boolean_test.coverage" NAME="boolean_test Coverage Results" MODIFIED="1739461161900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/parser" />
+    <SUITE FILE_PATH="coverage/pyracket$.coverage" NAME=" Coverage Results" MODIFIED="1739491747907" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

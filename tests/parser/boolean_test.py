@@ -1,9 +1,10 @@
-from pyracket.syntax.expr_ast import BooleanAst, PyracketParser
-from tests.parser.ParserTestBase import ParserTestBase
+from .ParserTestBase import ParserTestBase
+from pyracket.syntax import PyracketParser
+from pyracket.syntax.expr_ast import BooleanAst
 
 
 class TestBoolean(ParserTestBase):
-    p = PyracketParser(start="boolean", propagate_positions=True)
+    p = PyracketParser(start="boolean")
 
     def test_true(self):
         self.assert_parse_equal("#true", BooleanAst, True, 0, 5)
