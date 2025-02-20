@@ -57,11 +57,13 @@ class ExactRealAst[R](ExactAst[R]):
     base: B
     value: R
 
+
 @dataclass
 class IntegerAst[B](ExactRealAst[RkInteger]):
     meta: Meta
     base: B
     value: RkInteger
+
 
 @dataclass
 class RationalAst[B](ExactAst[RkRational]):
@@ -89,7 +91,7 @@ def integer_ast_of[B](
     print(f"digits: {digits}")
     value = int(digits, base.value)
     value = -value if sign is PosOrNeg.NEG else value
-    return IntegerAst(meta, base, RkInteger(value))
+    return IntegerAst(meta, base, RkInteger(base, value))
 
 def rational_ast_of[B](
         meta: Meta, base: B, sign: Optional[PosOrNeg], value: RkRational
@@ -228,9 +230,18 @@ class ToAstExpr(Transformer):
     def unsigned_rational_16(self, num: str, den: str) -> RkRational:
         return RkRational(int(num, 16), int(den, 16))
 
-    @v_args(inline=True, meta=True)
-    def exact_rational(self, meta: Meta, value: RationalAst[B]) -> RationalAst[B]:
+    @v_args(inline=True)
+    def exact_floating_point(
+            self,
+            value: ExactFloatingPointAst
+    ) -> ExactFloatingPointAst:
         return value
+
+    @v_args(inline=True)
+    def unsigned_floating_point_2(
+            self, before: str, after: str, exp: Optional[RkInteger]
+    ) -> RkExactFloatingPoint:
+        return RkExactFloatingPoint(Base.BINARY, before + after, exp or RkInteger(0))
     
  
 escape_chars = {

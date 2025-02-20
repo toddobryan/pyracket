@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from enum import Enum
 
 class Base(Enum):
@@ -30,10 +31,12 @@ class RkExactReal(RkExact):
 
 @dataclass
 class RkInteger(RkExactReal):
+    base: Base
     value: int
 
 @dataclass
 class RkRational(RkExactReal):
+    base: Base
     # normalized so that denominator is always positive
     numerator: int
     denominator: int
@@ -46,12 +49,21 @@ class RkRational(RkExactReal):
         self.numerator = num
         self.denominator = denom
 
-
-@dataclass
 class RkExactFloatingPoint(RkExactReal):
     base: Base
     digits: str
     exponent: str
+    dec: Decimal
+
+    def __init__(self, base: Base, digits: str, exponent: str) -> None:
+        self.base = base
+        self.digits = digits
+        self.exponent = exponent
+        self.dec = (int(digits, base.value)
+                    * base.value ** int(exponent, base.value))
+
+    def __str__(self) -> str:
+        return str(self.dec)
 
 
 @dataclass
