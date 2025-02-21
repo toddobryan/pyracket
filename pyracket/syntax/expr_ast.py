@@ -91,7 +91,7 @@ def rational_ast_of(
         meta: Meta, sign: Optional[PosOrNeg], value: RkRational
 ) -> RationalAst:
     if sign is PosOrNeg.NEG:
-        value = RkRational(-value.numerator, value.denominator)
+        value = RkRational(value.base, -value.numerator, value.denominator)
     return RationalAst(meta, value)
 
 class ToAstExpr(Transformer):
@@ -234,44 +234,44 @@ class ToAstExpr(Transformer):
     @v_args(inline=True)
     def unsigned_floating_point_2(
             self, before: str, after: str,
-            exp: Optional[RkInteger[Base.BINARY]]
+            exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
         return RkExactFloatingPoint(
             Base.BINARY,
-            RkInteger(Base.BINARY, int(before + after, 2)),
+            before + after,
             exp if exp else RkInteger(Base.BINARY, 0)
         )
 
     @v_args(inline=True)
     def unsigned_floating_point_8(
             self, before: str, after: str,
-            exp: Optional[RkInteger[Base.OCTAL]]
+            exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
         return RkExactFloatingPoint(
             Base.OCTAL,
-            RkInteger(Base.OCTAL, int(before + after, 8)),
+            before + after,
             exp if exp else RkInteger(Base.OCTAL, 0)
         )
 
     @v_args(inline=True)
     def unsigned_floating_point_10(
             self, before: str, after: str,
-            exp: Optional[RkInteger[Base.DECIMAL]]
+            exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
         return RkExactFloatingPoint(
             Base.DECIMAL,
-            RkInteger(Base.DECIMAL, int(before + after, 10)),
+            before + after,
             exp if exp else RkInteger(Base.DECIMAL, 0)
         )
 
     @v_args(inline=True)
     def unsigned_floating_point_16(
             self, before: str, after: str,
-            exp: Optional[RkInteger[Base.HEXADECIMAL]]
+            exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
         return RkExactFloatingPoint(
             Base.HEXADECIMAL,
-            RkInteger(Base.HEXADECIMAL, int(before + after, 16)),
+            before + after,
             exp if exp else RkInteger(Base.HEXADECIMAL, 0)
         )
     

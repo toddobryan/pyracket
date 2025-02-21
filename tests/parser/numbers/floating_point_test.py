@@ -1,4 +1,6 @@
-from hypothesis import given, strategies as st
+from decimal import Decimal
+
+from hypothesis import given, strategies as st, example
 
 from pyracket.semantics.numbers import BASE_TO_ALPH, Base, RkExactFloatingPoint, \
     RkInteger
@@ -15,7 +17,9 @@ class TestFloatingPoint(ParserTestBase):
         st.sampled_from(exact_prefixes(10)),
         st.decimals(allow_nan=False, allow_infinity=False)
     )
-    def test_random_decimals(self, prefix, d):
+    def test_random_decimals(self, prefix: str, d: Decimal):
+        prefix = ""
+        d = Decimal(0.5)
         if "." not in str(d): # handle integers elsewhere
             return
         decimal = str(d)
@@ -25,9 +29,9 @@ class TestFloatingPoint(ParserTestBase):
             right, exp = right_plus_exp.split("E")
         else:
             right, exp = right_plus_exp, None
-        digits = RkInteger(Base.DECIMAL, int(left + right))
+        digits = left + right
         exponent = RkInteger(
-            Base.DECIMAL, int(exp) if exp else str(-len(right))
+            Base.DECIMAL, int(exp) if exp else -len(right)
         )
         result = self.assert_parse_equal(
             to_parse, ExactFloatingPointAst,

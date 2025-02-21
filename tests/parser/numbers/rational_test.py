@@ -22,18 +22,18 @@ class TestRational(ParserTestBase):
         to_parse = prefix + strip_base(bin(num)) + "/" + strip_base(bin(den))
         self.assert_parse_equal(
             to_parse, RationalAst,
-            RkRational(num, den), 0, len(to_parse))
+            RkRational(Base.BINARY, num, den), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(8)), st.integers(), st.integers(min_value=1))
     def test_random_octal_fractions(self, prefix, num, den):
         to_parse = prefix + strip_base(oct(num)) + "/" + strip_base(oct(den))
         self.assert_parse_equal(
             to_parse, RationalAst,
-            RkRational(num, den), 0, len(to_parse))
+            RkRational(Base.OCTAL, num, den), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(16)), st.integers(), st.integers(min_value=1))
     def test_random_hex_fractions(self, prefix, num, den):
         to_parse = prefix + strip_base(hex(num)) + "/" + strip_base(hex(den))
         self.assert_parse_equal(
             to_parse, RationalAst,
-            RkRational(num, den), 0, len(to_parse))
+            RkRational(Base.HEXADECIMAL, num, den), 0, len(to_parse))
