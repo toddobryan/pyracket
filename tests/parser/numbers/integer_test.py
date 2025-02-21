@@ -1,6 +1,6 @@
 from hypothesis import given, strategies as st, example
 
-from pyracket.semantics.numbers import RkInteger
+from pyracket.semantics.numbers import RkInteger, Base
 from pyracket.syntax import PyracketParser
 from pyracket.syntax.expr_ast import IntegerAst
 from tests.parser.ParserTestBase import ParserTestBase
@@ -14,7 +14,7 @@ class TestInteger(ParserTestBase):
     def test_zero(self):
         self.assert_parse_equal(
             "0", IntegerAst,
-            RkInteger(0), 0, 1)
+            RkInteger(Base.DECIMAL, 0), 0, 1)
 
     @given(st.sampled_from(exact_prefixes(10)), st.integers())
     @example("", 0)
@@ -24,25 +24,25 @@ class TestInteger(ParserTestBase):
         to_parse = prefix + str(i)
         self.assert_parse_equal(
             to_parse, IntegerAst,
-            RkInteger(i), 0, len(to_parse))
+            RkInteger(Base.DECIMAL, i), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(2)), st.integers())
     def test_random_binary_integers(self, prefix, i):
         to_parse = prefix + strip_base(bin(i))
         self.assert_parse_equal(
             to_parse, IntegerAst,
-            RkInteger(i), 0, len(to_parse))
+            RkInteger(Base.BINARY, i), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(8)), st.integers())
     def test_random_octal_integers(self, prefix, i):
         to_parse = prefix + strip_base(oct(i))
         self.assert_parse_equal(
             to_parse, IntegerAst,
-            RkInteger(i), 0, len(to_parse))
+            RkInteger(Base.OCTAL, i), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(16)), st.integers())
     def test_random_hex_integers(self, prefix, i):
         to_parse = prefix + strip_base(hex(i))
         self.assert_parse_equal(
             to_parse, IntegerAst,
-            RkInteger(i), 0, len(to_parse))
+            RkInteger(Base.HEXADECIMAL, i), 0, len(to_parse))

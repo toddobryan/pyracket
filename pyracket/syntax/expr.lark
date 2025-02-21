@@ -50,23 +50,33 @@ exact_floating_point : exact_floating_point_2
                      | exact_floating_point_16
 exact_floating_point_2 : BINARY_EXACT opt_sign unsigned_floating_point_2
 exact_floating_point_8 : OCTAL_EXACT opt_sign unsigned_floating_point_8
-exact_floating_point_10 : DECIMAL_EXACT opt_sign unsigned_floating_point_10
+exact_floating_point_10 : [DECIMAL_EXACT] opt_sign unsigned_floating_point_10
 exact_floating_point_16 : HEXADECIMAL_EXACT opt_sign unsigned_floating_point_16
 
-unsigned_floating_point_2 : DIGIT_2* "." DIGIT_2+ [exp_2]
-unsigned_floating_point_8 : DIGIT_8* "." DIGIT_8+ [exp_8]
-unsigned_floating_point_10 : DIGIT_10* "." DIGIT_10+ [exp_10]
-unsigned_floating_point_16 : DIGIT_16* "." DIGIT_16+ [exp_16]
+unsigned_floating_point_2 : (star_2 "." plus_2 | plus_2 "." star_2) [exp_2]
+unsigned_floating_point_8 : (star_8 "." plus_8 | plus_8 "." star_8) [exp_8]
+unsigned_floating_point_10 : (star_10 "." plus_10 | plus_10 "." star_10) [exp_10]
+unsigned_floating_point_16 : (star_16 "." plus_16 | plus_16 "." star_16) [exp_16]
+
+star_2 : DIGIT_2*
+star_8 : DIGIT_8*
+star_10 : DIGIT_10*
+star_16 : DIGIT_16*
+
+plus_2 : DIGIT_2+
+plus_8 : DIGIT_8+
+plus_10 : DIGIT_10+
+plus_16 : DIGIT_16+
 
 exp_2 : EXP_MARK_2 opt_sign UNSIGNED_INTEGER_2
 exp_8 : EXP_MARK_8 opt_sign UNSIGNED_INTEGER_8
 exp_10 : EXP_MARK_10 opt_sign UNSIGNED_INTEGER_10
 exp_16 : EXP_MARK_16 opt_sign UNSIGNED_INTEGER_16
 
-EXP_MARK_16 = "s"i | "l"i
-EXP_MARK_10 = EXP_MARK_16 | "d"i | "e"i | "f"i
-EXP_MARK_8 = EXP_MARK_10
-EXP_MARK_2 = EXP_MARK_10
+EXP_MARK_16 : "s"i | "l"i
+EXP_MARK_10 : EXP_MARK_16 | "d"i | "e"i | "f"i
+EXP_MARK_8 : EXP_MARK_10
+EXP_MARK_2 : EXP_MARK_10
 
 exact_rational : exact_rational_2
                | exact_rational_8

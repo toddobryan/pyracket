@@ -1,6 +1,7 @@
 from hypothesis import given, strategies as st
 
-from pyracket.semantics.numbers import BASE_TO_ALPH, Base, RkExactFloatingPoint
+from pyracket.semantics.numbers import BASE_TO_ALPH, Base, RkExactFloatingPoint, \
+    RkInteger
 from pyracket.syntax import PyracketParser
 from pyracket.syntax.expr_ast import ExactFloatingPointAst
 from tests.parser.ParserTestBase import ParserTestBase
@@ -24,11 +25,15 @@ class TestFloatingPoint(ParserTestBase):
             right, exp = right_plus_exp.split("E")
         else:
             right, exp = right_plus_exp, None
-        digits = int(left + right)
-        exponent = exp if exp else str(-len(right))
-        self.assert_parse_equal(
+        digits = RkInteger(Base.DECIMAL, int(left + right))
+        exponent = RkInteger(
+            Base.DECIMAL, int(exp) if exp else str(-len(right))
+        )
+        result = self.assert_parse_equal(
             to_parse, ExactFloatingPointAst,
-            RkExactFloatingPoint(Base.DECIMAL, digits, exponent), 0, len(to_parse))
+            RkExactFloatingPoint(Base.DECIMAL, digits, exponent),
+            0, len(to_parse))
+        assert result.value == d
 
     @given(
         st.sampled_from(exact_prefixes(10)),
