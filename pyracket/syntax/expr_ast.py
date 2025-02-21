@@ -1,7 +1,7 @@
 import sys
 from dataclasses import dataclass
 from enum import Enum
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, cast
 
 from lark import ast_utils
 from lark.visitors import Transformer, v_args
@@ -39,7 +39,6 @@ class PosOrNeg(Enum):
 
 
 T = TypeVar("T")
-B = TypeVar("B", bound=Base)
 N = TypeVar("N", bound=RkNumber)
 E = TypeVar("E", bound=RkExact)
 R = TypeVar("R", bound=RkExactReal)
@@ -54,63 +53,58 @@ class ExactAst[E](NumberAst[E]):
 
 class ExactRealAst[R](ExactAst[R]):
     meta: Meta
-    base: B
     value: R
 
 
 @dataclass
-class IntegerAst[B](ExactRealAst[RkInteger]):
+class IntegerAst(ExactRealAst[RkInteger]):
     meta: Meta
-    base: B
     value: RkInteger
 
 
 @dataclass
-class RationalAst[B](ExactAst[RkRational]):
+class RationalAst(ExactAst[RkRational]):
     meta: Meta
-    base: B
     value: RkRational
 
 
 @dataclass
-class ExactFloatingPointAst[B](ExactRealAst[RkExactFloatingPoint]):
+class ExactFloatingPointAst(ExactRealAst[RkExactFloatingPoint]):
     meta: Meta
     value: RkExactFloatingPoint
 
 
 @dataclass
-class ExactComplexAst[B](NumberAst[RkExactComplex]):
+class ExactComplexAst(NumberAst[RkExactComplex]):
     meta: Meta
-    base: B
     value: RkExactComplex
 
 
-def integer_ast_of[B](
-        meta: Meta, base: B, sign: Optional[PosOrNeg], digits: str
-) -> IntegerAst[B]:
-    print(f"digits: {digits}")
+def integer_ast_of(
+        meta: Meta, base: Base, sign: Optional[PosOrNeg], digits: str
+) -> IntegerAst:
     value = int(digits, base.value)
     value = -value if sign is PosOrNeg.NEG else value
-    return IntegerAst(meta, base, RkInteger(base, value))
+    return IntegerAst(meta, RkInteger(base, value))
 
-def rational_ast_of[B](
-        meta: Meta, base: B, sign: Optional[PosOrNeg], value: RkRational
-) -> RationalAst[B]:
+def rational_ast_of(
+        meta: Meta, sign: Optional[PosOrNeg], value: RkRational
+) -> RationalAst:
     if sign is PosOrNeg.NEG:
         value = RkRational(-value.numerator, value.denominator)
-    return RationalAst(meta, base, value)
+    return RationalAst(meta, value)
 
 class ToAstExpr(Transformer):
-    def TRUE(self, s):
+    def TRUE(self, _: str):
         return True
 
-    def FALSE(self, s):
+    def FALSE(self, _: str):
         return False
 
-    def UNESCAPED_CHAR(self, s) -> str:
+    def UNESCAPED_CHAR(self, s: str) -> str:
         return s[0]
 
-    def ESCAPED_CHAR(self, s) -> str:
+    def ESCAPED_CHAR(self, s: str) -> str:
         assert s[0] == "\\"
         if s[1] in escape_chars:
             return escape_chars[s[1]]
@@ -155,64 +149,64 @@ class ToAstExpr(Transformer):
         return value
 
     @v_args(inline=True)
-    def exact_real[R](self, value: ExactRealAst[R]) -> ExactRealAst[R]:
+    def exact_real[R](self, value: ExactRealAst) -> ExactRealAst[R]:
         return value
 
     @v_args(inline=True)
-    def exact_integer(self, value: IntegerAst[B]) -> IntegerAst[B]:
+    def exact_integer(self, value: IntegerAst) -> IntegerAst:
         return value
 
     @v_args(inline=True, meta=True)
     def exact_integer_2(
             self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
-    ) -> IntegerAst[Base.BINARY]:
+    ) -> IntegerAst:
         return integer_ast_of(meta, Base.BINARY, sign, digits)
 
     @v_args(inline=True, meta=True)
     def exact_integer_8(
             self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
-    ) -> IntegerAst[Base.BINARY]:
+    ) -> IntegerAst:
         return integer_ast_of(meta, Base.OCTAL, sign, digits)
 
     @v_args(inline=True, meta=True)
     def exact_integer_10(
             self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
-    ) -> IntegerAst[Base.BINARY]:
+    ) -> IntegerAst:
         return integer_ast_of(meta, Base.DECIMAL, sign, digits)
 
     @v_args(inline=True, meta=True)
     def exact_integer_16(
             self, meta: Meta, _: str, sign: Optional[PosOrNeg], digits: str
-    ) -> IntegerAst[Base.BINARY]:
+    ) -> IntegerAst:
         return integer_ast_of(meta, Base.HEXADECIMAL, sign, digits)
 
     @v_args(inline=True)
-    def exact_rational(self, value: RationalAst[B]) -> RationalAst:
+    def exact_rational(self, value: RationalAst) -> RationalAst:
         return value
     
     @v_args(inline=True, meta=True)
     def exact_rational_2(
         self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
-    ) -> RationalAst[Base.BINARY]:
-        return rational_ast_of(meta, Base.BINARY, sign, value)
+    ) -> RationalAst:
+        return rational_ast_of(meta, sign, value)
     
     @v_args(inline=True, meta=True)
     def exact_rational_8(
         self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
-    ) -> RationalAst[Base.OCTAL]:
-        return rational_ast_of(meta, Base.OCTAL, sign, value)
+    ) -> RationalAst:
+        return rational_ast_of(meta, sign, value)
     
     @v_args(inline=True, meta=True)
     def exact_rational_10(
         self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
-    ) -> RationalAst[Base.DECIMAL]:
-        return rational_ast_of(meta, Base.DECIMAL, sign, value)
+    ) -> RationalAst:
+        return rational_ast_of(meta, sign, value)
     
     @v_args(inline=True, meta=True)
     def exact_rational_16(
         self, meta: Meta, _: str, sign: Optional[PosOrNeg], value: RkRational
-    ) -> RationalAst[Base.HEXADECIMAL]:
-        return rational_ast_of(meta, Base.HEXADECIMAL, sign, value)
+    ) -> RationalAst:
+        return rational_ast_of(meta, sign, value)
 
     @v_args(inline=True)
     def unsigned_rational_2(self, num: str, den: str) -> RkRational:
@@ -241,7 +235,8 @@ class ToAstExpr(Transformer):
     def unsigned_floating_point_2(
             self, before: str, after: str, exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
-        return RkExactFloatingPoint(Base.BINARY, before + after, exp or RkInteger(0))
+        return RkExactFloatingPoint(
+            Base.BINARY, before + after, exp or RkInteger(Base.BINARY, 0))
     
  
 escape_chars = {

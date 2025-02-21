@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
 
+
 class Base(Enum):
     BINARY = 2
     OCTAL = 8
@@ -52,15 +53,15 @@ class RkRational(RkExactReal):
 class RkExactFloatingPoint(RkExactReal):
     base: Base
     digits: str
-    exponent: str
+    exponent: RkInteger
     dec: Decimal
 
-    def __init__(self, base: Base, digits: str, exponent: str) -> None:
+    def __init__(self, base: Base, digits: str, exponent: RkInteger) -> None:
         self.base = base
         self.digits = digits
         self.exponent = exponent
         self.dec = (int(digits, base.value)
-                    * base.value ** int(exponent, base.value))
+                    * base.value ** exponent.value)
 
     def __str__(self) -> str:
         return str(self.dec)

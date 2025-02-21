@@ -1,8 +1,8 @@
 from hypothesis import given, strategies as st
 
-from pyracket.semantics.numbers import RkExactFloatingPoint, RkRational
+from pyracket.semantics.numbers import RkRational
 from pyracket.syntax import PyracketParser
-from pyracket.syntax.expr_ast import ExactFloatingPointAst, RationalAst
+from pyracket.syntax.expr_ast import RationalAst
 from ..ParserTestBase import ParserTestBase
 from ..numbers import exact_prefixes, strip_base
 
