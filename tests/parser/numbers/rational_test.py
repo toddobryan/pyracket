@@ -1,6 +1,6 @@
 from hypothesis import given, strategies as st
 
-from pyracket.semantics.numbers import RkExactFloatingPoint, RkRational
+from pyracket.semantics.numbers import RkExactFloatingPoint, RkRational, Base
 from pyracket.syntax import PyracketParser
 from pyracket.syntax.expr_ast import ExactFloatingPointAst, RationalAst
 from ..ParserTestBase import ParserTestBase
@@ -15,7 +15,7 @@ class TestRational(ParserTestBase):
         to_parse = "".join(prefix) + str(num) + "/" + str(den)
         self.assert_parse_equal(
             to_parse, RationalAst,
-            RkRational(num, den), 0, len(to_parse))
+            RkRational(Base.DECIMAL, num, den), 0, len(to_parse))
 
     @given(st.sampled_from(exact_prefixes(2)), st.integers(), st.integers(min_value=1))
     def test_random_binary_fractions(self, prefix, num, den):

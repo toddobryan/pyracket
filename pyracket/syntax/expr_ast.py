@@ -216,19 +216,19 @@ class ToAstExpr(Transformer):
 
     @v_args(inline=True)
     def unsigned_rational_2(self, num: str, den: str) -> RkRational:
-        return RkRational(int(num, 2), int(den, 2))
+        return RkRational(Base.BINARY, int(num, 2), int(den, 2))
 
     @v_args(inline=True)
     def unsigned_rational_8(self, num: str, den: str) -> RkRational:
-        return RkRational(int(num, 8), int(den, 8))
+        return RkRational(Base.OCTAL, int(num, 8), int(den, 8))
 
     @v_args(inline=True)
     def unsigned_rational_10(self, num: str, den: str) -> RkRational:
-        return RkRational(int(num, 10), int(den, 10))
+        return RkRational(Base.DECIMAL, int(num, 10), int(den, 10))
 
     @v_args(inline=True)
     def unsigned_rational_16(self, num: str, den: str) -> RkRational:
-        return RkRational(int(num, 16), int(den, 16))
+        return RkRational(Base.HEXADECIMAL, int(num, 16), int(den, 16))
 
     @v_args(inline=True)
     def exact_floating_point(
@@ -239,9 +239,47 @@ class ToAstExpr(Transformer):
 
     @v_args(inline=True)
     def unsigned_floating_point_2(
-            self, before: str, after: str, exp: Optional[RkInteger]
+            self, before: str, after: str,
+            exp: Optional[RkInteger[Base.BINARY]]
     ) -> RkExactFloatingPoint:
-        return RkExactFloatingPoint(Base.BINARY, before + after, exp or RkInteger(0))
+        return RkExactFloatingPoint(
+            Base.BINARY,
+            RkInteger(Base.BINARY, int(before + after, 2)),
+            exp if exp else RkInteger(Base.BINARY, 0)
+        )
+
+    @v_args(inline=True)
+    def unsigned_floating_point_8(
+            self, before: str, after: str,
+            exp: Optional[RkInteger[Base.OCTAL]]
+    ) -> RkExactFloatingPoint:
+        return RkExactFloatingPoint(
+            Base.OCTAL,
+            RkInteger(Base.OCTAL, int(before + after, 8)),
+            exp if exp else RkInteger(Base.OCTAL, 0)
+        )
+
+    @v_args(inline=True)
+    def unsigned_floating_point_10(
+            self, before: str, after: str,
+            exp: Optional[RkInteger[Base.DECIMAL]]
+    ) -> RkExactFloatingPoint:
+        return RkExactFloatingPoint(
+            Base.DECIMAL,
+            RkInteger(Base.DECIMAL, int(before + after, 10)),
+            exp if exp else RkInteger(Base.DECIMAL, 0)
+        )
+
+    @v_args(inline=True)
+    def unsigned_floating_point_16(
+            self, before: str, after: str,
+            exp: Optional[RkInteger[Base.HEXADECIMAL]]
+    ) -> RkExactFloatingPoint:
+        return RkExactFloatingPoint(
+            Base.HEXADECIMAL,
+            RkInteger(Base.HEXADECIMAL, int(before + after, 16)),
+            exp if exp else RkInteger(Base.HEXADECIMAL, 0)
+        )
     
  
 escape_chars = {

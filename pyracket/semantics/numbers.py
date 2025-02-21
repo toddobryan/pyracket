@@ -30,8 +30,8 @@ class RkExactReal(RkExact):
 
 
 @dataclass
-class RkInteger(RkExactReal):
-    base: Base
+class RkInteger[B](RkExactReal):
+    base: B
     value: int
 
 @dataclass
@@ -41,26 +41,28 @@ class RkRational(RkExactReal):
     numerator: int
     denominator: int
 
-    def __init__(self, num: int, denom: int) -> None:
+    def __init__(self, base: Base, num: int, denom: int) -> None:
         if denom == 0:
             raise ValueError("denominator cannot be zero")
         elif denom < 0:
             num, denom = -num, -denom
+        self.base = base
         self.numerator = num
         self.denominator = denom
 
-class RkExactFloatingPoint(RkExactReal):
+class RkExactFloatingPoint[B](RkExactReal):
     base: Base
-    digits: str
-    exponent: str
+    digits: RkInteger[B]
+    exponent: RkInteger[B]
     dec: Decimal
 
-    def __init__(self, base: Base, digits: str, exponent: str) -> None:
+    def __init__(
+            self, base: Base, digits: RkInteger[B], exponent: RkInteger[B]
+    ) -> None:
         self.base = base
         self.digits = digits
         self.exponent = exponent
-        self.dec = (int(digits, base.value)
-                    * base.value ** int(exponent, base.value))
+        self.dec = digits.value * base.value ** exponent.value
 
     def __str__(self) -> str:
         return str(self.dec)
