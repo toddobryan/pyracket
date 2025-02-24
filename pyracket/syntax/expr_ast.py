@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TypeVar, Optional, cast
 
-from lark import ast_utils
+from lark import ast_utils, Token
 from lark.visitors import Transformer, v_args
 from lark.tree import Meta
 
@@ -231,6 +231,13 @@ class ToAstExpr(Transformer):
     ) -> ExactFloatingPointAst:
         return value
 
+    @v_args(inline=True, meta=True)
+    def exact_floating_point_2(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg],
+            unsigned: RkExactFloatingPoint
+    ) -> ExactFloatingPointAst:
+        pass
+
     @v_args(inline=True)
     def unsigned_floating_point_2(
             self, before: str, after: str,
@@ -255,9 +262,9 @@ class ToAstExpr(Transformer):
 
     @v_args(inline=True)
     def unsigned_floating_point_10(
-            self, before: str, after: str,
-            exp: Optional[RkInteger]
+            self, before: str, after: str, exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
+        print(f"BEFORE: {before}, AFTER: {after}, EXP: {exp}")
         return RkExactFloatingPoint(
             Base.DECIMAL,
             before + after,
@@ -274,8 +281,43 @@ class ToAstExpr(Transformer):
             before + after,
             exp if exp else RkInteger(Base.HEXADECIMAL, 0)
         )
-    
- 
+
+    @v_args(inline=True)
+    def star_2(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def star_8(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def star_10(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def star_16(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def plus_2(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def plus_8(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def plus_10(self, *args: Token):
+        return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def plus_16(self, *args: Token):
+        return "".join([a.value for a in args])
+
+
+
+
+
 escape_chars = {
     "a": "\a",
     "b": "\b",
