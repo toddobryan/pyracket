@@ -1,6 +1,5 @@
 import sys
-from dataclasses import dataclass
-from enum import Enum
+from dataclasses import dataclass, replace
 from typing import TypeVar, Optional, cast
 
 from lark import ast_utils, Token
@@ -8,7 +7,7 @@ from lark.visitors import Transformer, v_args
 from lark.tree import Meta
 
 from pyracket.semantics.numbers import Base, RkNumber, RkExact, RkExactReal, \
-    RkInteger, RkRational, RkExactFloatingPoint, RkExactComplex
+    RkInteger, RkRational, RkExactFloatingPoint, RkExactComplex, PosOrNeg
 
 this_module = sys.modules[__name__]
 
@@ -31,12 +30,6 @@ class StringAst(PyracketAst[str], ast_utils.AsList):
 class BooleanAst(PyracketAst[bool]):
     meta: Meta
     value: bool
-
-
-class PosOrNeg(Enum):
-    POS = "+"
-    NEG = "-"
-
 
 T = TypeVar("T")
 N = TypeVar("N", bound=RkNumber)
@@ -93,6 +86,25 @@ def rational_ast_of(
     if sign is PosOrNeg.NEG:
         value = RkRational(value.base, -value.numerator, value.denominator)
     return RationalAst(meta, value)
+
+def unsigned_floating_point_of(
+        base: Base, before: str, after: str, exp: Optional[RkInteger],
+) -> RkExactFloatingPoint:
+    eff_exp = RkInteger(base, exp.value if exp else 0 - len(after))
+    return RkExactFloatingPoint(base, PosOrNeg.POS, before + after, eff_exp)
+
+def exact_floating_point_ast_of(
+        meta: Meta, sign: Optional[PosOrNeg], unsigned: RkExactFloatingPoint
+) -> ExactFloatingPointAst:
+    with_sign = RkExactFloatingPoint(
+        unsigned.base,
+        sign or PosOrNeg.POS,
+        unsigned.digits,
+        unsigned.exponent,
+    )
+    return ExactFloatingPointAst(meta, with_sign)
+
+def to_exp(base: Base, sign: Optional[PosOrNeg], digits: str):
 
 class ToAstExpr(Transformer):
     def TRUE(self, _: str):
@@ -236,51 +248,56 @@ class ToAstExpr(Transformer):
             self, meta: Meta, _: str, sign: Optional[PosOrNeg],
             unsigned: RkExactFloatingPoint
     ) -> ExactFloatingPointAst:
-        pass
+        return exact_floating_point_ast_of(meta, sign, unsigned)
+
+    @v_args(inline=True, meta=True)
+    def exact_floating_point_8(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg],
+            unsigned: RkExactFloatingPoint
+    ) -> ExactFloatingPointAst:
+        return exact_floating_point_ast_of(meta, sign, unsigned)
+
+    @v_args(inline=True, meta=True)
+    def exact_floating_point_10(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg],
+            unsigned: RkExactFloatingPoint
+    ) -> ExactFloatingPointAst:
+        return exact_floating_point_ast_of(meta, sign, unsigned)
+
+    @v_args(inline=True, meta=True)
+    def exact_floating_point_16(
+            self, meta: Meta, _: str, sign: Optional[PosOrNeg],
+            unsigned: RkExactFloatingPoint
+    ) -> ExactFloatingPointAst:
+        return exact_floating_point_ast_of(meta, sign, unsigned)
 
     @v_args(inline=True)
     def unsigned_floating_point_2(
             self, before: str, after: str,
             exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
-        return RkExactFloatingPoint(
-            Base.BINARY,
-            before + after,
-            exp if exp else RkInteger(Base.BINARY, 0)
-        )
+        return unsigned_floating_point_of(Base.BINARY, before, after, exp)
+
 
     @v_args(inline=True)
     def unsigned_floating_point_8(
             self, before: str, after: str,
             exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
-        return RkExactFloatingPoint(
-            Base.OCTAL,
-            before + after,
-            exp if exp else RkInteger(Base.OCTAL, 0)
-        )
+        return unsigned_floating_point_of(Base.OCTAL, before, after, exp)
 
     @v_args(inline=True)
     def unsigned_floating_point_10(
             self, before: str, after: str, exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
-        print(f"BEFORE: {before}, AFTER: {after}, EXP: {exp}")
-        return RkExactFloatingPoint(
-            Base.DECIMAL,
-            before + after,
-            exp if exp else RkInteger(Base.DECIMAL, 0)
-        )
+        return unsigned_floating_point_of(Base.DECIMAL, before, after, exp)
 
     @v_args(inline=True)
     def unsigned_floating_point_16(
             self, before: str, after: str,
             exp: Optional[RkInteger]
     ) -> RkExactFloatingPoint:
-        return RkExactFloatingPoint(
-            Base.HEXADECIMAL,
-            before + after,
-            exp if exp else RkInteger(Base.HEXADECIMAL, 0)
-        )
+        return unsigned_floating_point_of(Base.HEXADECIMAL, before, after, exp)
 
     @v_args(inline=True)
     def star_2(self, *args: Token):
@@ -313,6 +330,12 @@ class ToAstExpr(Transformer):
     @v_args(inline=True)
     def plus_16(self, *args: Token):
         return "".join([a.value for a in args])
+
+    @v_args(inline=True)
+    def exp_2(self, _: str, sign: Optional[PosOrNeg], power: str) -> RkInteger:
+        return to_exp(Base.BINARY, sign, power)
+
+
 
 
 

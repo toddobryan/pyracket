@@ -2,6 +2,10 @@ from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
 
+class PosOrNeg(Enum):
+    POS = "+"
+    NEG = "-"
+
 
 class Base(Enum):
     BINARY = 2
@@ -31,8 +35,8 @@ class RkExactReal(RkExact):
 
 
 @dataclass
-class RkInteger[B](RkExactReal):
-    base: B
+class RkInteger(RkExactReal):
+    base: Base
     value: int
 
 @dataclass
@@ -51,21 +55,41 @@ class RkRational(RkExactReal):
         self.numerator = num
         self.denominator = denom
 
-class RkExactFloatingPoint[B](RkExactReal):
+class RkExactFloatingPoint(RkExactReal):
     base: Base
     digits: str
     exponent: RkInteger
     dec: Decimal
 
-    def __init__(self, base: Base, digits: str, exponent: RkInteger) -> None:
+    def __init__(
+            self,
+            base: Base,
+            sign: PosOrNeg,
+            digits: str,
+            exponent: RkInteger
+    ) -> None:
         self.base = base
+        self.sign = sign
         self.digits = digits
         self.exponent = exponent
-        self.dec = (int(digits, base.value)
-                    * base.value ** exponent.value)
+        self.dec = ((-1 if sign is PosOrNeg.NEG else 1)
+                    * Decimal(int(digits, base.value))
+                    * Decimal(base.value) ** exponent.value)
+
+    def __eq__(self, other):
+        if isinstance(other, RkExactFloatingPoint):
+            # ignore dec, since it is derived from the other fields
+            return (self.base == other.base
+                    and self.sign == other.sign
+                    and self.digits == other.digits
+                    and self.exponent == other.exponent)
 
     def __str__(self) -> str:
         return str(self.dec)
+
+    def __repr__(self) -> str:
+        return (f"RkExactFloatingPoint({self.base}, "
+                + f"{self.sign}, {self.digits}, {self.exponent})")
 
 
 @dataclass

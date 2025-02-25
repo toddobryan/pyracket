@@ -12,7 +12,7 @@ class ParserTestBase:
             self, to_parse: str, cls: type[T], value, start, end
     ) -> T:
         result = cast(T, self.p.parse_ast(to_parse))
-        print(f"RESULT: {result}\nVALUE: {value}")
+        print(f"RESULT: {result}\nVALUE: {repr(value)}")
         assert isinstance(result, cls)
         assert result.value == value
         assert result.meta.start_pos == start
