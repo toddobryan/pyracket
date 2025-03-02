@@ -56,7 +56,7 @@ class IntegerAst(ExactRealAst[RkInteger]):
 
 
 @dataclass
-class RationalAst(ExactAst[RkRational]):
+class RationalAst(ExactRealAst[RkRational]):
     meta: Meta
     value: RkRational
 
@@ -90,7 +90,7 @@ def rational_ast_of(
 def unsigned_floating_point_of(
         base: Base, before: str, after: str, exp: Optional[RkInteger],
 ) -> RkExactFloatingPoint:
-    eff_exp = RkInteger(base, exp.value if exp else 0 - len(after))
+    eff_exp = RkInteger(base, (exp.value if exp else 0) - len(after))
     return RkExactFloatingPoint(base, PosOrNeg.POS, before + after, eff_exp)
 
 def exact_floating_point_ast_of(
@@ -104,7 +104,24 @@ def exact_floating_point_ast_of(
     )
     return ExactFloatingPointAst(meta, with_sign)
 
-def to_exp(base: Base, sign: Optional[PosOrNeg], digits: str):
+def exact_complex_of(
+        base: Base,
+        meta: Meta,
+        real: Optional[ExactRealAst],
+        sign: str,
+        imag: Optional[ExactRealAst],
+) -> ExactComplexAst:
+    real_val = real.value if real else RkInteger(base, 0)
+    imag_val = imag.value if imag else RkInteger(base, 1)
+    if sign == "-":
+        imag_val = imag_val.negate()
+    return ExactComplexAst(meta, RkExactComplex(real_val, imag_val))
+
+
+def to_exp(base: Base, sign: Optional[PosOrNeg], digits: str) -> RkInteger:
+    mult = -1 if (sign or PosOrNeg.POS) == PosOrNeg.NEG else 1
+    num = mult * int(digits, base.value)
+    return RkInteger(base, num)
 
 class ToAstExpr(Transformer):
     def TRUE(self, _: str):
@@ -335,8 +352,61 @@ class ToAstExpr(Transformer):
     def exp_2(self, _: str, sign: Optional[PosOrNeg], power: str) -> RkInteger:
         return to_exp(Base.BINARY, sign, power)
 
+    @v_args(inline=True)
+    def exp_8(self, _: str, sign: Optional[PosOrNeg], power: str) -> RkInteger:
+        return to_exp(Base.OCTAL, sign, power)
 
+    @v_args(inline=True)
+    def exp_10(self, _: str, sign: Optional[PosOrNeg], power: str) -> RkInteger:
+        return to_exp(Base.DECIMAL, sign, power)
 
+    @v_args(inline=True)
+    def exp_16(self, _: str, sign: Optional[PosOrNeg], power: str) -> RkInteger:
+        return to_exp(Base.HEXADECIMAL, sign, power)
+
+    @v_args(inline=True)
+    def exact_complex(self, value: ExactComplexAst) -> ExactComplexAst:
+        return value
+
+    @v_args(inline=True, meta=True)
+    def exact_complex_2(
+            self,
+            meta: Meta,
+            real: Optional[RationalAst],
+            sign: str,
+            imag: Optional[RationalAst],
+    ) -> ExactComplexAst:
+        return exact_complex_of(Base.BINARY, meta, real, sign, imag)
+
+    @v_args(inline=True, meta=True)
+    def exact_complex_8(
+            self,
+            meta: Meta,
+            real: Optional[RationalAst],
+            sign: str,
+            imag: Optional[RationalAst],
+    ) -> ExactComplexAst:
+        return exact_complex_of(Base.OCTAL, meta, real, sign, imag)
+
+    @v_args(inline=True, meta=True)
+    def exact_complex_10(
+            self,
+            meta: Meta,
+            real: Optional[RationalAst],
+            sign: str,
+            imag: Optional[RationalAst],
+    ) -> ExactComplexAst:
+        return exact_complex_of(Base.DECIMAL, meta, real, sign, imag)
+
+    @v_args(inline=True, meta=True)
+    def exact_complex_16(
+            self,
+            meta: Meta,
+            real: Optional[RationalAst],
+            sign: str,
+            imag: Optional[RationalAst],
+    ) -> ExactComplexAst:
+        return exact_complex_of(Base.HEXADECIMAL, meta, real, sign, imag)
 
 
 

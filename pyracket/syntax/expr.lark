@@ -26,9 +26,7 @@ ESCAPED_CHAR : /\\[abefnrtv"'\\]/
 
 exact : exact_real | exact_complex
 
-exact_real : exact_integer
-           | exact_floating_point
-           | exact_rational
+exact_real : exact_integer | exact_rational
 
 exact_integer : exact_integer_2
               | exact_integer_8
@@ -82,6 +80,7 @@ exact_rational : exact_rational_2
                | exact_rational_8
                | exact_rational_10
                | exact_rational_16
+               | exact_floating_point
 exact_rational_2 : BINARY_EXACT opt_sign unsigned_rational_2
 exact_rational_8 : OCTAL_EXACT opt_sign unsigned_rational_8
 exact_rational_10 : [DECIMAL_EXACT] opt_sign unsigned_rational_10

@@ -1,10 +1,19 @@
-from dataclasses import dataclass
+import decimal
+from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
+from typing import Optional
+
 
 class PosOrNeg(Enum):
     POS = "+"
     NEG = "-"
+
+    def negate(self) -> "PosOrNeg":
+        if self == PosOrNeg.NEG:
+            return PosOrNeg.POS
+        else:
+            return PosOrNeg.NEG
 
 
 class Base(Enum):
@@ -23,7 +32,8 @@ BASE_TO_ALPH = {
 
 
 class RkNumber:
-    pass
+    def negate(self):
+        pass
 
 
 class RkExact(RkNumber):
@@ -38,6 +48,9 @@ class RkExactReal(RkExact):
 class RkInteger(RkExactReal):
     base: Base
     value: int
+
+    def negate(self):
+        return RkInteger(self.base, -1 * self.value)
 
 @dataclass
 class RkRational(RkExactReal):
@@ -55,41 +68,30 @@ class RkRational(RkExactReal):
         self.numerator = num
         self.denominator = denom
 
+    def negate(self):
+        return RkRational(self.base, -1 * self.numerator, self.denominator)
+
+@dataclass
 class RkExactFloatingPoint(RkExactReal):
     base: Base
+    sign: PosOrNeg
     digits: str
     exponent: RkInteger
-    dec: Decimal
+    _dec: Optional[Decimal] = (
+        field(init=False, repr=False, compare=False, default=None))
 
-    def __init__(
-            self,
-            base: Base,
-            sign: PosOrNeg,
-            digits: str,
-            exponent: RkInteger
-    ) -> None:
-        self.base = base
-        self.sign = sign
-        self.digits = digits
-        self.exponent = exponent
-        self.dec = ((-1 if sign is PosOrNeg.NEG else 1)
-                    * Decimal(int(digits, base.value))
-                    * Decimal(base.value) ** exponent.value)
+    def dec(self) -> Decimal:
+        if not self._dec:
+            new_prec = max(len(self.digits), decimal.getcontext().prec)
+            decimal.setcontext(decimal.Context(prec=new_prec))
+            self._dec = ((-1 if self.sign is PosOrNeg.NEG else 1)
+                    * Decimal(int(self.digits, self.base.value))
+                     * Decimal(self.base.value) ** Decimal(self.exponent.value))
+        return self._dec
 
-    def __eq__(self, other):
-        if isinstance(other, RkExactFloatingPoint):
-            # ignore dec, since it is derived from the other fields
-            return (self.base == other.base
-                    and self.sign == other.sign
-                    and self.digits == other.digits
-                    and self.exponent == other.exponent)
-
-    def __str__(self) -> str:
-        return str(self.dec)
-
-    def __repr__(self) -> str:
-        return (f"RkExactFloatingPoint({self.base}, "
-                + f"{self.sign}, {self.digits}, {self.exponent})")
+    def negate(self) -> "RkExactFloatingPoint":
+        return RkExactFloatingPoint(
+            self.base, self.sign.negate(), self.digits, self.exponent)
 
 
 @dataclass
